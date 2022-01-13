@@ -5,6 +5,8 @@ import json
 from bs4 import BeautifulSoup
 import base64
 from  more_itertools import unique_everseen
+from colorama import init, Fore
+init(autoreset=True)
 
 auth_token = 'YOUR TOKEN'
 results =[]
@@ -96,9 +98,9 @@ i = 0
 for item in results:
     if 'Вопрос' in item:
         i = i + 1
-        print(i,item)
+        print(Fore.CYAN + str(i),Fore.MAGENTA + str(item))
     else:
-        print(item)
+        print(Fore.GREEN + str(item))
 
 
 
