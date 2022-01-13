@@ -1,5 +1,4 @@
 import requests
-import json
 from bs4 import BeautifulSoup
 import base64
 from  more_itertools import unique_everseen
