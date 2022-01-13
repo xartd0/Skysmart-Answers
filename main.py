@@ -1,6 +1,4 @@
-import webbrowser
 import requests
-import psutil
 import json
 from bs4 import BeautifulSoup
 import base64
