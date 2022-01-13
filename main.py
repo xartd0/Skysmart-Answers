@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import base64
 from  more_itertools import unique_everseen
 from colorama import init, Fore
-init(autoreset=True)
+init(autoreset=True,convert=True)
 
 auth_token = 'YOUR TOKEN'
 results =[]
