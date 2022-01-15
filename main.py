@@ -9,6 +9,7 @@ auth_token = 'YOUR TOKEN'
 results =[]
 
 def answerparse(taskHash):
+    # ---- получение uuid заданий в тесте ----#
     url = f"https://api-edu.skysmart.ru/api/v1/task/start"
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
     headers = {
@@ -17,8 +18,10 @@ def answerparse(taskHash):
 
     }
     response = requests.request("POST", url, headers=headers, data=payload)
-    roomhashjson = response.json()
-    roomHash = roomhashjson['roomHash']
+    roomhashjson = response.json() 
+    roomHash = roomhashjson['roomHash'] # код рума 
+    
+    # ---- тут получаем html в json ----#
     url = "https://api-edu.skysmart.ru/api/v1/lesson/join"
     payload = "{\"roomHash\":\"" + roomHash + "\"}"
     headers = {
@@ -27,8 +30,10 @@ def answerparse(taskHash):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     steps_raw = response.json()
-    checkradom = steps_raw['taskStudentMeta']['steps']
-    random = False
+    
+    
+    checkradom = steps_raw['taskStudentMeta']['steps'] # все uuid заданий
+    random = False # проверка на рандомные задания
     for uuid in checkradom:
         url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid['stepUuid']
         headers = {
