@@ -27,13 +27,6 @@ def answerparse(taskHash):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     steps_raw = response.json()
-    try:
-        teacherinfo = steps_raw['taskMeta']['teacher']
-        subject = steps_raw['taskMeta']['subject']
-        titletest = steps_raw['taskMeta']['path']['module']['lesson']
-        moduletitle = steps_raw['taskMeta']['path']['module']
-    except:
-        pass
     checkradom = steps_raw['taskStudentMeta']['steps']
     random = False
     for uuid in checkradom:
