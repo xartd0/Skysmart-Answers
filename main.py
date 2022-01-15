@@ -45,6 +45,8 @@ def answerparse(taskHash):
         anstitle = soup.find('vim-instruction')
         anstitlerow = '📝Вопрос:' + (anstitle.text.replace('\n', ' ')).replace('\r',' ')
         results.append(anstitlerow)
+        
+        # а тут много циклов,каждый цикл это разные типы заданий,знаю стремно,но мне лень переделывать
         for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
             results.append(i.text)
         for i in soup.find_all('vim-input-answers'):
