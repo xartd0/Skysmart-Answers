@@ -43,8 +43,11 @@ def answerparse(taskHash):
         answer_row = response.json()
         soup = BeautifulSoup(answer_row['content'], 'html.parser')
         anstitle = soup.find('vim-instruction')
-        anstitlerow = '📝Вопрос:' + (anstitle.text.replace('\n', ' ')).replace('\r',' ')
-        results.append(anstitlerow)
+        try:
+            anstitlerow = '📝Вопрос:' + (anstitle.text.replace('\n', ' ')).replace('\r',' ')
+            results.append(anstitlerow)
+        except:
+            pass
         
         # а тут много циклов,каждый цикл это разные типы заданий,знаю стремно,но мне лень переделывать
         for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
