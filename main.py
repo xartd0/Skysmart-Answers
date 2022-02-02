@@ -44,21 +44,21 @@ def answerparse(taskHash):
         response = requests.request("GET", url, headers=headers)
         answer_row = response.json()
         soup = BeautifulSoup(answer_row['content'], 'html.parser')
-        anstitle = soup.find('vim-instruction')
         try:
-            anstitlerow = '📝Вопрос:' + (anstitle.text.replace('\n', ' ')).replace('\r',' ')
+            anstitlerow = '📝Вопрос:' + (soup.find('vim-instruction').text.replace('\n', ' ')).replace('\r',' ')
             results.append(anstitlerow)
         except:
-            pass
-        
+            anstitlerow = '📝Вопрос:' + (soup.find('vim-content-section-title').text.replace('\n', ' ')).replace('\r',' ')
+            results.append(anstitlerow)
+        # ledotetote
         # а тут много циклов,каждый цикл это разные типы заданий,знаю стремно,но мне лень переделывать
         for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
             results.append(i.text)
-        for i in soup.find_all('vim-input-answers'):
+        for i in soup.find_all('vim-input-answers'):            
             j = i.find('vim-input-item')
             results.append(j.text)
         for i in soup.find_all('vim-select-item', attrs={'correct': 'true'}):
-            results.append(i.text)
+            results.append(i.text.replace('\n', ' '))
         for i in soup.find_all('vim-test-image-item', attrs={'correct': 'true'}):
             results.append(f'{i.text} - Верный')
         for i in soup.find_all('math-input'):
@@ -72,10 +72,10 @@ def answerparse(taskHash):
             for f in soup.find_all('vim-dnd-group-item'):
                 if i['answer-id'] in f['drag-ids']:
                     results.append(f'{f.text} - {i.text}')
-        for i in soup.find_all('vim-groups-item'):
-            arow = i['text']
-            a = base64.b64decode(arow) 
-            results.append(f"{a.decode('utf-8')}")   
+        for i in soup.find_all('vim-groups-row'):
+            for l in i.find_all('vim-groups-item'):
+                a = base64.b64decode(l['text']) 
+                results.append(f"{a.decode('utf-8')}")   
         for i in soup.find_all('vim-strike-out-item', attrs={'striked': 'true'}):
             results.append(i.text)
         for i in soup.find_all('vim-dnd-image-set-drag'):
