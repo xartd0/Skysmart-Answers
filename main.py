@@ -128,25 +128,25 @@ async def answerparse(taskHash):
     return results
 
 
-async def syntaxgood(results):
-    results = ' '.join(results)
-    r = re.compile("sqrt{(.*?)}")
-    bol = re.compile("gt")
-    men = re.compile("lt")
-    for i in r.findall(results):
-        results = results.replace("\sqrt{" + str(i) + "}", "√" + str(i))
-    for i in bol.findall(results):
-        results = results.replace("\gt", ">")
-    for i in men.findall(results):
-        results = results.replace("\lt", "<")
-    results = results.split(' ')
+# Тут будет очистка всех странных знаков и тд
+#async def syntaxgood(results):
+    #results = ' '.join(results)
+    #r = re.compile("sqrt{(.*?)}")
+    #bol = re.compile("gt")
+    #men = re.compile("lt")
+    #for i in r.findall(results):
+        #results = results.replace("\sqrt{" + str(i) + "}", "√" + str(i))
+    #for i in bol.findall(results):
+        #results = results.replace("\gt", ">")
+    #for i in men.findall(results):
+        #results = results.replace("\lt", "<")
+    #results = results.split(' ')
     
-    return results
+    #return results
 
 # Самый простой вывод ответов
 taskHash = input('Введите комнату: ')
 results = asyncio.run(answerparse(taskHash))
-results = asyncio.run(syntaxgood(results))
 for i in results:
     print(i)
 #\gt > \lt 
