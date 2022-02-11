@@ -4,7 +4,6 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import base64
-from fpdf import FPDF
 import re 
 import asyncio
 import aiohttp
