@@ -73,7 +73,7 @@ async def answerparse(taskHash):
             anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-content-section-title').text.replace('\n', ' ')).replace('\r',' ')
             results.append(anstitlerow)
         # ledotetote
-        # а тут много циклов,каждый цикл это разные типы заданий,знаю стремно,но мне лень переделывать
+        # а тут много циклов,каждый цикл это разные типы заданий,знаю,стремно
         if uuid['isRandom']:
             random = True
         if random:
