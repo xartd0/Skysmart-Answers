@@ -42,6 +42,17 @@ async def get_room(taskHash):
             await session.close()
             return roomhashjson['roomHash'] # код рума 
             
+async def get_json_html(uuid):
+    url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid['stepUuid']
+    headers = {
+    'Authorization': auth_token
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as resp:
+            answer_row = await resp.json()
+            await session.close()
+    return BeautifulSoup(answer_row['content'], 'html.parser')
+
 
 async def answerparse(taskHash):
     x = 0
@@ -54,15 +65,7 @@ async def answerparse(taskHash):
     random = False # проверка на рандомные задания
     for uuid in allsteps:
         x = x + 1
-        url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid['stepUuid']
-        headers = {
-        'Authorization': auth_token
-        }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=headers) as resp:
-                answer_row = await resp.json()
-                await session.close()
-        soup = BeautifulSoup(answer_row['content'], 'html.parser')
+        soup = await get_json_html(uuid)
         try:
             anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-instruction').text.replace('\n', ' ')).replace('\r',' ')
             results.append(anstitlerow)
