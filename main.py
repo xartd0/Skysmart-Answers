@@ -1,14 +1,18 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 from bs4 import BeautifulSoup
 import base64
-import re
+from fpdf import FPDF
+import re 
+import asyncio
+import aiohttp
 
-#auth_token аккаунта буду менять,но он может перестать работать,поэтому лучше используйте свой
-# еще один токен Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NDM2NTE3NDksImV4cCI6MTY0NjI0Mzc0OSwicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJ1c2VySWQiOjQ4OTg1Mzg1LCJlbWFpbCI6ImdkZmtqbmdrc2hqZG1mbmdraGpzbkBnbWFpbC5jb20iLCJuYW1lIjoi0JLQsNC90Y8iLCJzdXJuYW1lIjoi0JLQsNC90Y8iLCJpZGVudGl0eSI6Im11YmluaW5vZ2kifQ.CDpO-n7febtcZErWOFmK9R6WmJc7a2uNXDYBRbOvJetVdMlhXAGaj3nb3yS6rUMxRnEZcBuNcFeroI5F9yUAMk5uMIGEaTlECiMIxWLE4VUZ2TRkHK_w6jNlRZC3RBHBJjISWdFpA3i37pMarpij7tHnNNzN2DSvjzL3KNLe_Hy1mliN_LFZGRg2UNwRvc77u71zxI7ExIZ2-MwVjY53OoHxiqVZr-59y3rhnMLtREQGsCBmHZXkuf9rlv9wZxsipF9y_w03SMFGZjhXvchIVuGiJbDD11bVPA1LXHO5w2H71WXTn05ZV3Z6YG11s8Dn-AaPx2uKCW4QYsQDwpxGZ-fNRxP36Qb1vgQpMoCKcSpjV3bH7hPyzTgxqWNCBX7oYv2OTvCU9GMiN1T7nGc6kLI5SF-C_PvpMu1LkKwK35MgaLRVt4Ffjvh9ujKTzVHzEJuBzak9R-8MWTC8Sq-Olr3Hmb7KWnT9-egTsgLs6kXURqCfaFAupOAdd5ABhaK9KwsfAvp5zpNeP-f_oG59iH5d7atUKtC5I4hgtchXyvqet88b6Gu0ZO49akXteVSI0yReA_kQUlx0hEcQQx1tDM9lF2DM3pexDLE1ZGBm8b2O7-cWl7GSIpaM-zPXVz16NMNrgqoperSLmEEBWtE3cNhvbJJMEu0esu5JhNYTE_g
-auth_token = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NDM2NTEzNjAsImV4cCI6MTY0NjI0MzM2MCwicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJ1c2VySWQiOjQ4OTgzMzU3LCJlbWFpbCI6Im9hZGptZmdram5hZGZrbWdqQGdtYWlsLmNvbSIsIm5hbWUiOiLQktC70LDQtCDQktC70LDQtCIsInN1cm5hbWUiOiLQktC70LDQtCIsImlkZW50aXR5IjoieGl6dXJldGlkdSJ9.E3wX-TAtl05HshNr-DS2ktcpYsie_Stv_zkxeY2oPzU98kF146N2p5ubRbyL87Qn53eIBu-VFBDxIK3aqI52nD2gZtigG5eU58svtbDBDSiWtHT0wNclFhtxAhZtXF6tP7TJXZ53O-vhAiZTyRwA4yODGUiIeQ7Fdv3oluvDzg1YQO4ctJBXrQSffJ_P9eEQW_4X7y5ccn3BMD52iA6tgj86mAcrw87iWRC1WSxkpCk03L8Hpary7Lqs7etFt0Hc7nPrdbra0czeT1d6SZaxtFA_6e0Eci0qT8CGBQ_kkyLU8K8oxdrd1BL5VLteH41Znsa_tsHEifIwUoCSwp_Qc6dkDNZXmPqWzWadaz6LeZJRxu81V4Y-N8rNMP5-XnC6BkRp5EaBDAnlcF9OyjjdgSLqMyO8BDEzdN4Aqg6gwyQ5N002EBpxlUmaBBPwrwBp4_b1TZFPGzbPamnt_JCM4-muylWln55Rud13yjRINPz8RO-zvbv4XFRpfGA-ffhVQec8GyvIVNQJahEDl8jVnLRJxgImb8lobH6eNC4bNbqzuSbkH3qSyVbeXUa2XZEyp2CMJ9mA6I041uONiOCjhvGy7dUq61lc3zwhIm0bS7AND2-6M8wvdGXowGgIynBAGnWuLWrOpEVWit5ygC-JOy6E9H2cC8CBd4YrViUDmlM'
+auth_token = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NDM0NzM2NDMsImV4cCI6MTY0NjA2NTY0Mywicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJ1c2VySWQiOjQ4NDEwMDExLCJlbWFpbCI6ImZqc2RqbWZqc25kZmpuQGdtYWlsLmNvbSIsIm5hbWUiOiLQkdC-0LPQtNCw0L0iLCJzdXJuYW1lIjoi0JLQsNC70LDQutCw0YEiLCJpZGVudGl0eSI6InRhbml4YXRpcmUifQ.q9b_1Iy-V6s5zFQGPsHS39apjRBZP_mvxI-s_jhHmt9geEcHAgvNHPOEV9isEgIx9V1cFodYe5O3y3_UZNP0EA54ItBd0S5XmLnH4n3efEIXtfSCqf0j4Edf8hmWgjLAkg46zfqz7E2gv-tD-uBFGz76QtebIyQgV3tSTRNTUdHRTp3pRDyP1wlV4RpAvwoNtOPNJe4inFEpjiQVDeWM7YkP1D1CGpPadrvc72CVfKL5PjKcAz67KBLcgSeg9OIbBCapJ2HZEi6ExOwYzuMFQf2hTSbMvGVVi7Ay0uouNGCCgeTx5WuyYqclugjg8p6-kdPdwM3YnD6ymRU7xZWyZjU77CFjRv9PR_TY_UrdAiE6oanNXNgSUB2uT9vesOmBUGImjhIHY0roZZTyK0n5Ca87M4V--0Gzg0eaMIVRBk5wrd6pdA4sNFg73KYLJ-KDyZCX6u9SHjMWRsrQRjeDOfLlCU-Jx2DHiL4LUxMbJD3mnc8WBR43WLjEg0eQIgFQhoFg-_8xD_BgEhRKBud_4bnWiTHWCrXW9r9Y_oRC-WBIYijzcqiK4Oj6dAxILKhml_mLbSqsxiPwQqjDS58fQUjTuKhFEiKqI1JbYtIVGkDh9mq1L7fl-c6xpsIBYh7pRsJcztQNzrSDpMcOe4oZBe5Vp89apo7bDKFwmGbBtqg'
 
-def answerparse(taskHash):
+
+async def answerparse(taskHash):
     x = 0
     results = []
     # ---- получение uuid заданий в тесте ----#
@@ -19,9 +23,11 @@ def answerparse(taskHash):
         'Authorization': auth_token
 
     }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    roomhashjson = response.json() 
-    roomHash = roomhashjson['roomHash'] # код рума 
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, headers=headers, data=payload) as resp:
+            roomhashjson = await resp.json() 
+            roomHash = roomhashjson['roomHash'] # код рума 
+            await session.close()
     
     # ---- тут получаем html в json ----#
     url = "https://api-edu.skysmart.ru/api/v1/lesson/join"
@@ -30,8 +36,10 @@ def answerparse(taskHash):
         'Content-Type': 'application/json',
         'Authorization': auth_token
     }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    steps_raw = response.json()
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, headers=headers, data=payload) as resp:
+            steps_raw = await resp.json()
+            await session.close()
     
     
     checkradom = steps_raw['taskStudentMeta']['steps'] # все uuid заданий
@@ -42,8 +50,10 @@ def answerparse(taskHash):
         headers = {
         'Authorization': auth_token
         }
-        response = requests.request("GET", url, headers=headers)
-        answer_row = response.json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers) as resp:
+                answer_row = await resp.json()
+                await session.close()
         soup = BeautifulSoup(answer_row['content'], 'html.parser')
         try:
             anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-instruction').text.replace('\n', ' ')).replace('\r',' ')
@@ -95,18 +105,16 @@ def answerparse(taskHash):
                 if i['answer-id'] in f['drag-ids']:
                     results.append(f'{f.text} - {i.text}')
     return results
-                
-# улучшаю читаемость ответов,буду добавлять.
-def syntaxgood(results):
+
+
+async def syntaxgood(results):
     results = ' '.join(results)
     r = re.compile("sqrt{(.*?)}")
     bol = re.compile("gt")
     men = re.compile("lt")
     for i in r.findall(results):
-        # делаем нормальный корень
         results = results.replace("\sqrt{" + str(i) + "}", "√" + str(i))
     for i in bol.findall(results):
-        # тут знаки сравнения
         results = results.replace("\gt", ">")
     for i in men.findall(results):
         results = results.replace("\lt", "<")
@@ -114,3 +122,4 @@ def syntaxgood(results):
     
     return results
 
+#\gt > \lt 
