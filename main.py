@@ -103,7 +103,7 @@ def syntaxgood(results):
     bol = re.compile("gt")
     men = re.compile("lt")
     for i in r.findall(results):
-        # делаем нормльный корень
+        # делаем нормальный корень
         results = results.replace("\sqrt{" + str(i) + "}", "√" + str(i))
     for i in bol.findall(results):
         # тут знаки сравнения
