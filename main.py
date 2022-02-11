@@ -122,4 +122,10 @@ async def syntaxgood(results):
     
     return results
 
+# Самый простой вывод ответов,чисто для примера.
+taskHash = input('Введите комнату: ')
+results = asyncio.run(answerparse(taskHash))
+results = asyncio.run(syntaxgood(results))
+for i in results:
+    print(i)
 #\gt > \lt 
