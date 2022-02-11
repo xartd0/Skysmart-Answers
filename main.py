@@ -8,16 +8,27 @@ import re
 import asyncio
 import aiohttp
 
-auth_token = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NDM0NzM2NDMsImV4cCI6MTY0NjA2NTY0Mywicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJ1c2VySWQiOjQ4NDEwMDExLCJlbWFpbCI6ImZqc2RqbWZqc25kZmpuQGdtYWlsLmNvbSIsIm5hbWUiOiLQkdC-0LPQtNCw0L0iLCJzdXJuYW1lIjoi0JLQsNC70LDQutCw0YEiLCJpZGVudGl0eSI6InRhbml4YXRpcmUifQ.q9b_1Iy-V6s5zFQGPsHS39apjRBZP_mvxI-s_jhHmt9geEcHAgvNHPOEV9isEgIx9V1cFodYe5O3y3_UZNP0EA54ItBd0S5XmLnH4n3efEIXtfSCqf0j4Edf8hmWgjLAkg46zfqz7E2gv-tD-uBFGz76QtebIyQgV3tSTRNTUdHRTp3pRDyP1wlV4RpAvwoNtOPNJe4inFEpjiQVDeWM7YkP1D1CGpPadrvc72CVfKL5PjKcAz67KBLcgSeg9OIbBCapJ2HZEi6ExOwYzuMFQf2hTSbMvGVVi7Ay0uouNGCCgeTx5WuyYqclugjg8p6-kdPdwM3YnD6ymRU7xZWyZjU77CFjRv9PR_TY_UrdAiE6oanNXNgSUB2uT9vesOmBUGImjhIHY0roZZTyK0n5Ca87M4V--0Gzg0eaMIVRBk5wrd6pdA4sNFg73KYLJ-KDyZCX6u9SHjMWRsrQRjeDOfLlCU-Jx2DHiL4LUxMbJD3mnc8WBR43WLjEg0eQIgFQhoFg-_8xD_BgEhRKBud_4bnWiTHWCrXW9r9Y_oRC-WBIYijzcqiK4Oj6dAxILKhml_mLbSqsxiPwQqjDS58fQUjTuKhFEiKqI1JbYtIVGkDh9mq1L7fl-c6xpsIBYh7pRsJcztQNzrSDpMcOe4oZBe5Vp89apo7bDKFwmGbBtqg'
 
-
+async def auth():
+    url = "https://api-edu.skysmart.ru/api/v2/auth/auth/student"
+    session_data = {"phoneOrEmail":"сюда почту или телефон","password":"пароль"}
+    headers = {
+        "Content-type": "application/json",
+        "Accept": "application/json; charset=UTF-8"
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, headers=headers, data = json.dumps(session_data)) as resp:
+            data = await resp.read()
+            hashrate = json.loads(data)
+            await session.close()
+            return 'Bearer ' + hashrate['jwtToken']
 
 async def get_steps(roomHash):
     url = "https://api-edu.skysmart.ru/api/v1/lesson/join"
     payload = "{\"roomHash\":\"" + roomHash + "\"}"
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': auth_token
+        'Authorization': await auth()
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, data=payload) as resp:
@@ -32,7 +43,7 @@ async def get_room(taskHash):
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': auth_token
+        'Authorization': await auth()
 
     }
     async with aiohttp.ClientSession() as session:
@@ -44,7 +55,7 @@ async def get_room(taskHash):
 async def get_json_html(uuid):
     url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid['stepUuid']
     headers = {
-    'Authorization': auth_token
+    'Authorization': await auth()
     }
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers) as resp:
@@ -72,7 +83,7 @@ async def answerparse(taskHash):
             anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-content-section-title').text.replace('\n', ' ')).replace('\r',' ')
             results.append(anstitlerow)
         # ledotetote
-        # а тут много циклов,каждый цикл это разные типы заданий,знаю,стремно
+        # а тут много циклов,каждый цикл это разные типы заданий,знаю стремно,но мне лень переделывать
         if uuid['isRandom']:
             random = True
         if random:
