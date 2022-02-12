@@ -142,14 +142,10 @@ async def ochistka(string):
     drob = re.compile('dfrac')
     for i in fraction.findall(string):
         string = string.replace("\dfrac{" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
-        print(string)
-
     for i in square_root.findall(string):
         string = string.replace("\sqrt{" + str(i) + "}", "корень из " + str(i))
-
     for i in power.findall(string):
         string = string.replace(str(i[0]) + "^" + str(i[1]), str(i[0]) + " в степени " + str(i[1]))
-
     for i in bol.findall(string):
         string = string.replace("\gt", ">")
     for i in men.findall(string):
