@@ -131,12 +131,14 @@ async def answerparse(taskHash):
 # Тут будет очистка всех странных знаков и тд
 async def ochistka(string):
     string = string.replace('\n', '')
+    string = '├ ' + string
     fraction = re.compile("frac{(.*?)}{(.*?)}")
     square_root = re.compile("sqrt{(.*?)}")
     power = re.compile("(.*?)\^(.*)")
     bol = re.compile("gt")
     men = re.compile("lt")
     pm = re.compile('pm')
+    perp = re.compile('perp')
     for i in fraction.findall(string):
         string = string.replace("frac {" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
 
@@ -152,6 +154,8 @@ async def ochistka(string):
         string = string.replace("\lt", "<")
     for i in pm.findall(string):
         string = string.replace("\pm", "±")
+    for i in perp.findall(string):
+        string = string.replace("\perp", "⊥")
     return string
 
 # Самый простой вывод ответов
