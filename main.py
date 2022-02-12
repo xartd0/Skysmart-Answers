@@ -129,20 +129,30 @@ async def answerparse(taskHash):
 
 
 # Тут будет очистка всех странных знаков и тд
-#async def syntaxgood(results):
-    #results = ' '.join(results)
-    #r = re.compile("sqrt{(.*?)}")
-    #bol = re.compile("gt")
-    #men = re.compile("lt")
-    #for i in r.findall(results):
-        #results = results.replace("\sqrt{" + str(i) + "}", "√" + str(i))
-    #for i in bol.findall(results):
-        #results = results.replace("\gt", ">")
-    #for i in men.findall(results):
-        #results = results.replace("\lt", "<")
-    #results = results.split(' ')
-    
-    #return results
+async def ochistka(string):
+    string = string.replace('\n', '')
+    fraction = re.compile("frac{(.*?)}{(.*?)}")
+    square_root = re.compile("sqrt{(.*?)}")
+    power = re.compile("(.*?)\^(.*)")
+    bol = re.compile("gt")
+    men = re.compile("lt")
+    pm = re.compile('pm')
+    for i in fraction.findall(string):
+        string = string.replace("frac {" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
+
+    for i in square_root.findall(string):
+        string = string.replace("\sqrt{" + str(i) + "}", "корень из " + str(i))
+
+    for i in power.findall(string):
+        string = string.replace(str(i[0]) + "^" + str(i[1]), str(i[0]) + " в степени " + str(i[1]))
+
+    for i in bol.findall(string):
+        string = string.replace("\gt", ">")
+    for i in men.findall(string):
+        string = string.replace("\lt", "<")
+    for i in pm.findall(string):
+        string = string.replace("\pm", "±")
+    return string
 
 # Самый простой вывод ответов
 taskHash = input('Введите комнату: ')
