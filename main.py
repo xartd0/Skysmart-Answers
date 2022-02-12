@@ -132,15 +132,17 @@ async def answerparse(taskHash):
 async def ochistka(string):
     string = string.replace('\n', '')
     string = '├ ' + string
-    fraction = re.compile("frac{(.*?)}{(.*?)}")
+    fraction = re.compile("dfrac{(.*?)}{(.*?)}")
     square_root = re.compile("sqrt{(.*?)}")
     power = re.compile("(.*?)\^(.*)")
     bol = re.compile("gt")
     men = re.compile("lt")
     pm = re.compile('pm')
     perp = re.compile('perp')
+    drob = re.compile('dfrac')
     for i in fraction.findall(string):
-        string = string.replace("frac {" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
+        string = string.replace("\dfrac{" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
+        print(string)
 
     for i in square_root.findall(string):
         string = string.replace("\sqrt{" + str(i) + "}", "корень из " + str(i))
