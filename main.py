@@ -146,6 +146,10 @@ async def ochistka(string):
     syst = re.compile('begin{cases}')
     systend = re.compile('end{cases}')
     him = re.compile('mathrm{(.*?)}')
+    dot = re.compile('cdot')
+    strel = re.compile('rarr')
+    for i in him.findall(string):
+        string = string.replace("\mathrm{" + str(i) + "}", str(i))
     for i in fraction.findall(string):
         string = string.replace("\dfrac{" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
 
@@ -171,8 +175,10 @@ async def ochistka(string):
         string = string.replace(r"\begin{cases}", "{")
     for i in systend.findall(string):
         string = string.replace("\end{cases}", "}")
-    for i in him.findall(string):
-        string = string.replace("\mathrm{" + str(i) + "}", str(i)) # не работает,не знаю почему:(
+    for i in dot.findall(string):
+        string = string.replace(r"\cdot", " ⋅")
+    for i in strel.findall(string):
+        string = string.replace(r"\rarr", " →")
     return string
 
 # Самый простой вывод ответов
