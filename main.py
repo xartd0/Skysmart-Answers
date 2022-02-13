@@ -90,6 +90,8 @@ async def answerparse(taskHash):
             results.append('Это задание рандомное! Ответы могут не совпадать!')
         for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
             results.append(i.text)
+        for i in soup.find_all('vim-order-sentence-verify-item'):
+            results.append(await ochistka(i.text))
         for i in soup.find_all('vim-input-answers'):            
             j = i.find('vim-input-item')
             results.append(j.text)
