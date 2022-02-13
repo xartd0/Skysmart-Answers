@@ -133,7 +133,7 @@ async def answerparse(taskHash):
 # Тут будет очистка всех странных знаков и тд
 async def ochistka(string):
     string = string.replace('\n', '')
-    string = '├ ' + string
+    string = '→ ' + string
     fraction = re.compile("dfrac{(.*?)}{(.*?)}")
     square_root = re.compile("sqrt{(.*?)}")
     power = re.compile("(.*?)\^(.*)")
@@ -148,6 +148,8 @@ async def ochistka(string):
     him = re.compile('mathrm{(.*?)}')
     dot = re.compile('cdot')
     strel = re.compile('rarr')
+    pi = re.compile('pi')
+    besk = re.compile('infty')
     for i in him.findall(string):
         string = string.replace("\mathrm{" + str(i) + "}", str(i))
     for i in fraction.findall(string):
@@ -179,6 +181,10 @@ async def ochistka(string):
         string = string.replace(r"\cdot", " ⋅")
     for i in strel.findall(string):
         string = string.replace(r"\rarr", " →")
+    for i in pi.findall(string):
+        string = string.replace(r"\pi", "π")
+    for i in besk.findall(string):
+        string = string.replace(r"\infty", "∞")
     return string
 
 # Самый простой вывод ответов
