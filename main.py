@@ -141,7 +141,6 @@ async def ochistka(string):
     men = re.compile("lt")
     pm = re.compile('pm')
     perp = re.compile('perp')
-    drob = re.compile('dfrac')
     for i in fraction.findall(string):
         string = string.replace("\dfrac{" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
     for i in square_root.findall(string):
