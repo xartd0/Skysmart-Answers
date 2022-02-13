@@ -141,12 +141,20 @@ async def ochistka(string):
     men = re.compile("lt")
     pm = re.compile('pm')
     perp = re.compile('perp')
+    menrav = re.compile('le')
+    bolrav = re.compile('ge')
+    syst = re.compile('begin{cases}')
+    systend = re.compile('end{cases}')
+    him = re.compile('mathrm{(.*?)}')
     for i in fraction.findall(string):
         string = string.replace("\dfrac{" + str(i[0]) + "}{" + str(i[1]) + "}", str(i[0]) + "/" + str(i[1]))
+
     for i in square_root.findall(string):
         string = string.replace("\sqrt{" + str(i) + "}", "корень из " + str(i))
+
     for i in power.findall(string):
-        string = string.replace(str(i[0]) + "^" + str(i[1]), str(i[0]) + " в степени " + str(i[1]))
+        string = string.replace(str(i[0]) + "^" + str(i[1]), str(i[0]) + " ^ " + str(i[1]))
+
     for i in bol.findall(string):
         string = string.replace("\gt", ">")
     for i in men.findall(string):
@@ -155,6 +163,16 @@ async def ochistka(string):
         string = string.replace("\pm", "±")
     for i in perp.findall(string):
         string = string.replace("\perp", "⊥")
+    for i in menrav.findall(string):
+        string = string.replace("\le", "≤")
+    for i in bolrav.findall(string):
+        string = string.replace("\ge", "≥")
+    for i in syst.findall(string):
+        string = string.replace(r"\begin{cases}", "{")
+    for i in systend.findall(string):
+        string = string.replace("\end{cases}", "}")
+    for i in him.findall(string):
+        string = string.replace("\mathrm{" + str(i) + "}", str(i)) # не работает,не знаю почему:(
     return string
 
 # Самый простой вывод ответов
