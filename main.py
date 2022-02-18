@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import requests
 import json
 from bs4 import BeautifulSoup
 import base64
@@ -11,7 +10,7 @@ import aiohttp
 
 async def auth():
     url = "https://api-edu.skysmart.ru/api/v2/auth/auth/student"
-    session_data = {"phoneOrEmail":"сюда почту или телефон","password":"пароль"}
+    session_data = {"phoneOrEmail":"почта","password":"пароль"}
     headers = {
         "Content-type": "application/json",
         "Accept": "application/json; charset=UTF-8"
@@ -23,23 +22,9 @@ async def auth():
             await session.close()
             return 'Bearer ' + hashrate['jwtToken']
 
-async def get_steps(roomHash):
-    url = "https://api-edu.skysmart.ru/api/v1/lesson/join"
-    payload = "{\"roomHash\":\"" + roomHash + "\"}"
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': await auth()
-    }
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, headers=headers, data=payload) as resp:
-            steps_raw = await resp.json()
-            await session.close()
-    
-    return steps_raw['taskStudentMeta']['steps'] # все uuid заданий
-
 
 async def get_room(taskHash):
-    url = f"https://api-edu.skysmart.ru/api/v1/task/start"
+    url = f"https://api-edu.skysmart.ru/api/v1/task/preview"
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
     headers = {
         'Content-Type': 'application/json',
@@ -48,12 +33,12 @@ async def get_room(taskHash):
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, data=payload) as resp:
-            roomhashjson = await resp.json() 
+            steps_raw = await resp.json() 
             await session.close()
-            return roomhashjson['roomHash'] # код рума 
+            return steps_raw['meta']['stepUuids'] # все uuid заданий
             
 async def get_json_html(uuid):
-    url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid['stepUuid']
+    url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid
     headers = {
     'Authorization': await auth()
     }
@@ -68,53 +53,58 @@ async def answerparse(taskHash):
     x = 0
     results = []
     # ---- получение uuid заданий в тесте ----#
-    roomHash = await get_room(taskHash)
     
     # ---- тут получаем html в json ----#
-    allsteps = await get_steps(roomHash)
+    allsteps = await get_room(taskHash)
     random = False # проверка на рандомные задания
     for uuid in allsteps:
+        print(uuid)
         x = x + 1
         soup = await get_json_html(uuid)
         try:
             anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-instruction').text.replace('\n', ' ')).replace('\r',' ')
             results.append(anstitlerow)
         except:
-            anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-content-section-title').text.replace('\n', ' ')).replace('\r',' ')
-            results.append(anstitlerow)
-        # ledotetote
+            try:
+                anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-content-section-title').text.replace('\n', ' ')).replace('\r',' ')
+                results.append(anstitlerow)
+            except:
+                try:
+                    anstitlerow = f'№{x}📝Вопрос: ' + (soup.find('vim-text').text.replace('\n', ' ')).replace('\r',' ')
+                    results.append(anstitlerow)
+                except:
+                    anstitlerow = f'№{x}📝Вопрос'
+                    results.append(anstitlerow)
         # а тут много циклов,каждый цикл это разные типы заданий,знаю стремно,но мне лень переделывать
-        if uuid['isRandom']:
-            random = True
         if random:
             results.append('Это задание рандомное! Ответы могут не совпадать!')
         for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
-            results.append(i.text)
+            results.append(await ochistka(i.text))
         for i in soup.find_all('vim-order-sentence-verify-item'):
             results.append(await ochistka(i.text))
         for i in soup.find_all('vim-input-answers'):            
             j = i.find('vim-input-item')
-            results.append(j.text)
+            results.append(await ochistka(j.text))
         for i in soup.find_all('vim-select-item', attrs={'correct': 'true'}):
-            results.append(i.text.replace('\n', ' '))
+            results.append(await ochistka(i.text))
         for i in soup.find_all('vim-test-image-item', attrs={'correct': 'true'}):
             results.append(f'{i.text} - Верный')
         for i in soup.find_all('math-input'):
             j = i.find('math-input-answer')
-            results.append(j.text)
+            results.append(await ochistka(j.text))
         for i in soup.find_all('vim-dnd-text-drop'):
             for f in soup.find_all('vim-dnd-text-drag'):
                 if i['drag-ids'] == f['answer-id']:
-                    results.append(f'{f.text}')
+                    results.append(f'{await ochistka(f.text)}')
         for i in soup.find_all('vim-dnd-group-drag'):
             for f in soup.find_all('vim-dnd-group-item'):
                 if i['answer-id'] in f['drag-ids']:
-                    results.append(f'{f.text} - {i.text}')
+                    results.append(f'{await ochistka(f.text)} - {await ochistka(i.text)}')
         for i in soup.find_all('vim-groups-row'):
             for l in i.find_all('vim-groups-item'):
                 try:
                     a = base64.b64decode(l['text']) 
-                    results.append(f"{a.decode('utf-8')}")   
+                    results.append(f"{await ochistka(a.decode('utf-8'))}")   
                 except:
                     pass
         for i in soup.find_all('vim-strike-out-item', attrs={'striked': 'true'}):
@@ -122,15 +112,15 @@ async def answerparse(taskHash):
         for i in soup.find_all('vim-dnd-image-set-drag'):
             for f in soup.find_all('vim-dnd-image-set-drop'):
                 if i['answer-id'] in f['drag-ids']:
-                    results.append(f'{f["image"]} - {i.text}')
+                    image = await ochistka(f['image'])
+                    text = await ochistka(i.text)
+                    results.append(f'{image} - {text}')
         for i in soup.find_all('vim-dnd-image-drag'):
             for f in soup.find_all('vim-dnd-image-drop'):
                 if i['answer-id'] in f['drag-ids']:
                     results.append(f'{f.text} - {i.text}')
     return results
 
-
-# Тут будет очистка всех странных знаков и тд
 async def ochistka(string):
     string = string.replace('\n', '')
     string = '→ ' + string
@@ -186,10 +176,3 @@ async def ochistka(string):
     for i in besk.findall(string):
         string = string.replace(r"\infty", "∞")
     return string
-
-# Самый простой вывод ответов
-taskHash = input('Введите комнату: ')
-results = asyncio.run(answerparse(taskHash))
-for i in results:
-    print(i)
-#\gt > \lt 
