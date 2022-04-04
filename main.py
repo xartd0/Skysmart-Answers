@@ -9,14 +9,16 @@ import aiohttp
 
 token= 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NDg2NTMzNDUsImV4cCI6MTY1MTI0NTM0NSwicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJhdXRoVXNlcklkIjpudWxsLCJ1c2VySWQiOjU3NjMwMTQ0LCJlbWFpbCI6InNkZmdlNHRlc3RAZ21haWwuY29tIiwibmFtZSI6ImZnaGRmZ2hkZmdoIiwic3VybmFtZSI6ImRmZ2hkZmdoIiwiaWRlbnRpdHkiOiJuYWtvbHVzZW11In0.q49DECee8SLjmxkjKW1bEhFFbPR74xKSO52AnvVvX6BqwM-4ILtraGI8rTpOU_GRUtZczoMhnXXOJoHi3S2S45TJ3XN97mZw7NI1apxQ5CKJoYYrnoUnhG6Hh7bahKJZ6U3es_66t2QFaQngXwWslhMl4UmThsJgCsmqC4d_X3ivxnde-cuQJ5o-quIGoNnBS13QXpVKcULe-zeRlPUJeJITSaitfH-LIkE7B2aGt4l-XET1hXxUavebP7ItUJ2p-J_Y53z8nhqLKYxs2_JJ_3sY8lcO_Gga_gEKUjhzxmoKmTb0Hn9F9LIZ4_OSD0sQjS50mCv0HnhcbAAB1A4P1BvcPnn_FDOhj0LE4tiN75YWcPldSjr7KXBc4udJBic_ir8xxKkEES__F_OM65tQecDaY_Pc6Sn6bb3KVVGMzBYAnZrlQ7J9EdqeWizhZZqg8ebLywPr9XdCy7iUxGN8n2zlxxLSQjOZ06RyZkXZqk-MjYwwYoteBSVcj5Hawc9v73AUAiz-V4p8g8Mo3vge5qJZwExsWTcwN7gOcX_VO22BcrbUkhaH-69zd3RM1JEQ5BnZNXGakvCm-EQlOQL9FoqtXCvmrnleak8G4G1Mw11gldSYpZAlYVNkjWOoYGuw-ajhSuVPaNcP3IxUTppzirjFdbBJ7rnT1bJ6SBQUoQQ'
 
-async def get_room(taskHash):
-    url = f"https://api-edu.skysmart.ru/api/v1/task/preview"
-    payload = "{\"taskHash\":\"" + taskHash + "\"}"
-    headers = {
+headers = {
         'Content-Type': 'application/json',
         'Authorization': token,
         'User-Agent':'User-Agent Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0'
     }
+
+async def get_room(taskHash):
+    url = f"https://api-edu.skysmart.ru/api/v1/task/preview"
+    payload = "{\"taskHash\":\"" + taskHash + "\"}"
+    headers = headers
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, data=payload) as resp:
             steps_raw = await resp.json() 
@@ -25,11 +27,7 @@ async def get_room(taskHash):
             
 async def get_json_html(uuid):
     url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': token,
-        'User-Agent':'User-Agent Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0'
-    }
+    headers = headers
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers) as resp:
             answer_row = await resp.json()
