@@ -1,3 +1,20 @@
-![изображение](https://user-images.githubusercontent.com/43171120/149659855-ec775a90-e256-413c-8f39-74fa7e7c30b0.png)
+#Ответы на тесты платформы skysmart
 
-https://cdz-bot.ru/
+### Установка
+
+1. Подготовка к работе
+
+   ```bash
+   $ git clone https://github.com/xartd0/Skysmart-Answers.git
+   $ pip install -r requirements.txt
+   $ cd Skysmart-Answers
+   ```
+
+2. Небольшая настройка
+
+   ```bash
+   $ nano utils/config.py
+   $ Укажите ваши данные от аккаунт
+   ```
+
+![изображение](https://user-images.githubusercontent.com/43171120/208267920-fe6022cb-66a4-4824-b44b-d3622320f742.png)
