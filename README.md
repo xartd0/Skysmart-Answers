@@ -25,7 +25,7 @@
    ```bash
    $ python template.py
    ```
-   ## Нужно указать именно название комнату, а не ссылку. Комната - https://edu.skysmart.ru/student/maxevepuma -> maxevepuma
+   ## Нужно указать именно название комнаты, а не ссылку. Комната - https://edu.skysmart.ru/student/maxevepuma -> maxevepuma
 
 
 
