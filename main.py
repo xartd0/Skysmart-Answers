@@ -1,37 +1,49 @@
 # -*- coding: utf-8 -*-
 
-import json
 from bs4 import BeautifulSoup
 import base64
 import re 
 import asyncio
 import aiohttp
+from user_agent import generate_user_agent
 
+url_room = 'https://api-edu.skysmart.ru/api/v1/task/preview'
+url_auth = 'https://api-edu.skysmart.ru/api/v1/auth/auth'
+url_steps = 'https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid='
+
+auth_creds = {
+    'email': 'asd3fgsdfgs3dfgsdfg@gmail.com',
+    'password': 'i6D92r2gUmwvWJu'
+}
+
+async def auth():
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url_auth, headers={'User-Agent': generate_user_agent()}, data=auth_creds) as resp:
+            
+            json_resp = await resp.json() 
+
+            return {
+                'Accept' : 'application/json, text/plain, */*',
+                'Authorization': 'Bearer ' + json_resp['jwtToken'],
+                'Connection' : 'keep-alive',
+                'Content-Type': 'application/json',
+                'User-Agent': generate_user_agent(),
+            }
 
 async def get_room(taskHash):
-    url = f"https://api-edu.skysmart.ru/api/v1/task/preview"
+    url = url_room
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NTE0MDI2MzMsImV4cCI6MTY1Mzk5NDYzMywicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJhdXRoVXNlcklkIjpudWxsLCJ1c2VySWQiOjM3Nzg4NjQ3LCJlbWFpbCI6InRlc3RpbGluZXRlc3RAZ21haWwuY29tIiwibmFtZSI6ItCf0JDQktCe0JDQotCf0J7QktCi0JDQnyIsInN1cm5hbWUiOiLQq9CS0JDQn9Cr0JLQkNCf0KvQktCQIiwiaWRlbnRpdHkiOiJiYWZlZHVuYWdlIn0.YgHn0lJEYmXLmn3g8vFl7NN5awMrf9S7diDhP3wsu9A_4BLzGY6YQqYHZrt-dfGFRcGUHsmrwTOl-QgTQ_gSspL-NYE3DADs0IzbDrwRpL4LD2rSDM016LH4pS2-TqHknV-KN1lX49kva55JUEQzmpzNkKtJtnGluRaBSX83misEfjYcyM0RNxVSaCP89hP0r-dSd80e8eylvdveh0TrOrEuPQAlN9bBJCHPvGgRlxbGxvi0OBPeBd6_wS_vBf9JP4WIjmNaSi1CV0ddijlDcb42DhNFrmkV8CA_0-R63MCH0DxX5hd5igisd726Yijz_bK_dYkSxbCa0FN_W2mDb41W5xBx2BU7jd2DMz6250B7ceZo_Y3FHSZ9G2EkHVrKuoUxaFXmXUfHOxlcynH2tbUSMBVTW9nZwEzQh8Rmf-p5UuNStmilfqIrLGPz8LQx5_-LBbgusQK6pjbsesCwicsM6KN-jA1E45iqufe1OfebEYzyfEGRVnFwNlCNWuGR5PY0263W-vo-tupzR0UHmjT8PD73WE-UjprTm_gPpfu9ZjCG82jdalrbmZv-d72pEd5YaBW9BSrtw2FvaFHM0IZXfIsP79MjNmXPay68pmlMiSV8bimVzgEBlmek3rC6gLGmNkURN0OQrWWCcoW8g6EMfJ3NcjUVPKi3OajdH5w',
-        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
-        'Accept:': 'application/json, text/plain, */*'
-    }
+    headers = await auth()
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, data=payload) as resp:
             steps_raw = await resp.json() 
-            print(steps_raw)
             await session.close()
             return steps_raw['meta']['stepUuids'] # все uuid заданий
             
 async def get_json_html(uuid):
-    url = "https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid=" + uuid
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NTE0MDI2MzMsImV4cCI6MTY1Mzk5NDYzMywicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJhdXRoVXNlcklkIjpudWxsLCJ1c2VySWQiOjM3Nzg4NjQ3LCJlbWFpbCI6InRlc3RpbGluZXRlc3RAZ21haWwuY29tIiwibmFtZSI6ItCf0JDQktCe0JDQotCf0J7QktCi0JDQnyIsInN1cm5hbWUiOiLQq9CS0JDQn9Cr0JLQkNCf0KvQktCQIiwiaWRlbnRpdHkiOiJiYWZlZHVuYWdlIn0.YgHn0lJEYmXLmn3g8vFl7NN5awMrf9S7diDhP3wsu9A_4BLzGY6YQqYHZrt-dfGFRcGUHsmrwTOl-QgTQ_gSspL-NYE3DADs0IzbDrwRpL4LD2rSDM016LH4pS2-TqHknV-KN1lX49kva55JUEQzmpzNkKtJtnGluRaBSX83misEfjYcyM0RNxVSaCP89hP0r-dSd80e8eylvdveh0TrOrEuPQAlN9bBJCHPvGgRlxbGxvi0OBPeBd6_wS_vBf9JP4WIjmNaSi1CV0ddijlDcb42DhNFrmkV8CA_0-R63MCH0DxX5hd5igisd726Yijz_bK_dYkSxbCa0FN_W2mDb41W5xBx2BU7jd2DMz6250B7ceZo_Y3FHSZ9G2EkHVrKuoUxaFXmXUfHOxlcynH2tbUSMBVTW9nZwEzQh8Rmf-p5UuNStmilfqIrLGPz8LQx5_-LBbgusQK6pjbsesCwicsM6KN-jA1E45iqufe1OfebEYzyfEGRVnFwNlCNWuGR5PY0263W-vo-tupzR0UHmjT8PD73WE-UjprTm_gPpfu9ZjCG82jdalrbmZv-d72pEd5YaBW9BSrtw2FvaFHM0IZXfIsP79MjNmXPay68pmlMiSV8bimVzgEBlmek3rC6gLGmNkURN0OQrWWCcoW8g6EMfJ3NcjUVPKi3OajdH5w',
-        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
-        'Accept:': 'application/json, text/plain, */*'
-    }
+    url = url_steps + uuid
+    headers = await auth()
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers) as resp:
             answer_row = await resp.json()
@@ -48,7 +60,6 @@ async def answerparse(taskHash):
     allsteps = await get_room(taskHash)
     random = False # проверка на рандомные задания
     for uuid in allsteps:
-        print(uuid)
         x = x + 1
         soup = await get_json_html(uuid)
         try:
@@ -110,7 +121,8 @@ async def answerparse(taskHash):
                 if i['answer-id'] in f['drag-ids']:
                     results.append(f'{f.text} - {i.text}')
     
-    return results
+    for answer in results:
+        print(answer)
 
 async def ochistka(string):
     string = string.replace('\n', '')
@@ -168,4 +180,8 @@ async def ochistka(string):
         string = string.replace(r"\infty", "∞")
     return string
 
+
+
+taskhash = input('Напишите название комнаты: ')
+asyncio.run(answerparse(taskhash))
 
