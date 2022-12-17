@@ -4,7 +4,9 @@ import asyncio
 
 async def main():
 
-    answers_module = SkyAnswers('paganemare')
+    task_hash = input('Укажите название комнаты: ')
+
+    answers_module = SkyAnswers(task_hash)
     answers = await answers_module.get_answers()
 
     for solution in answers:
