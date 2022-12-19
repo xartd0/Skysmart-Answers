@@ -24,63 +24,69 @@ class SkyAnswers:
         return answers_array
 
     def get_task_question(self, soup):
-        return soup.find("vim-instruction").get_text()
+        return soup.find("vim-instruction").text
 
     def get_task_answer(self, soup, tasks_count): # Тут все перепишу, если руки дойдут
         answers = []
 
-        for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
-            answers.append(i.text)
+        if soup.find('vim-test-item', attrs={'correct': 'true'}):
+            for i in soup.find_all('vim-test-item', attrs={'correct': 'true'}):
+                answers.append(i.text)
         
-        for i in soup.find_all('vim-order-sentence-verify-item'):
-            answers.append(i.text)
+        if soup.find('vim-order-sentence-verify-item'):
+            for i in soup.find_all('vim-order-sentence-verify-item'):
+                answers.append(i.text)
         
-        for i in soup.find_all('vim-input-answers'):            
-            j = i.find('vim-input-item')
-            answers.append(j.text)
+        if soup.find('vim-input-answers'):
+            for i in soup.find_all('vim-input-answers'):            
+                answers.append(i.find('vim-input-item').text)
         
-        for i in soup.find_all('vim-select-item', attrs={'correct': 'true'}):
-            answers.append(i.text)
+        if soup.find('vim-select-item', attrs={'correct': 'true'}):
+            for i in soup.find_all('vim-select-item', attrs={'correct': 'true'}):
+                answers.append(i.text)
         
-        for i in soup.find_all('vim-test-image-item', attrs={'correct': 'true'}):
-            answers.append(f'{i.text} - Верный')
+        if soup.find('vim-test-image-item', attrs={'correct': 'true'}):
+            for i in soup.find_all('vim-test-image-item', attrs={'correct': 'true'}):
+                answers.append(f'{i.text} - Верный')
         
-        for i in soup.find_all('math-input'):
-            j = i.find('math-input-answer')
-            answers.append(j.text)
+        if i.find('math-input-answer'):
+            answers.append(i.find('math-input-answer').text)
         
-        for i in soup.find_all('vim-dnd-text-drop'):
-            for f in soup.find_all('vim-dnd-text-drag'):
-                if i['drag-ids'] == f['answer-id']:
-                    answers.append(f'{f.text}')
+        if soup.find('vim-dnd-text-drop'):
+            for i in soup.find_all('vim-dnd-text-drop'):
+                for f in soup.find_all('vim-dnd-text-drag'):
+                    if i['drag-ids'] == f['answer-id']:
+                        answers.append(f'{f.text}')
         
-        for i in soup.find_all('vim-dnd-group-drag'):
-            for f in soup.find_all('vim-dnd-group-item'):
-                if i['answer-id'] in f['drag-ids']:
-                    answers.append(f'{f.text} - {i.text}')
+        if soup.find('vim-dnd-group-drag'):
+            for i in soup.find_all('vim-dnd-group-drag'):
+                for f in soup.find_all('vim-dnd-group-item'):
+                    if i['answer-id'] in f['drag-ids']:
+                        answers.append(f'{f.text} - {i.text}')
         
-        for i in soup.find_all('vim-groups-row'):
-            for l in i.find_all('vim-groups-item'):
-                try:
-                    a = base64.b64decode(l['text']) 
-                    answers.append(f"{a.decode('utf-8')}")   
-                except:
-                    pass
+        if soup.find('vim-groups-row'):
+            for i in soup.find_all('vim-groups-row'):
+                for l in i.find_all('vim-groups-item'):
+                    try:
+                        answers.append(f"{base64.b64decode(l['text']).decode('utf-8')}")   
+                    except:
+                        pass
 
-        for i in soup.find_all('vim-strike-out-item', attrs={'striked': 'true'}):
-            answers.append(i.text)
+        if soup.find('vim-strike-out-item'):
+            for i in soup.find_all('vim-strike-out-item', attrs={'striked': 'true'}):
+                answers.append(i.text)
 
-        for i in soup.find_all('vim-dnd-image-set-drag'):
-            for f in soup.find_all('vim-dnd-image-set-drop'):
-                if i['answer-id'] in f['drag-ids']:
-                    image = f['image']
-                    text = i.text
-                    answers.append(f'{image} - {text}')
+        if soup.find('vim-dnd-image-set-drag'):
+            for i in soup.find_all('vim-dnd-image-set-drag'):
+                for f in soup.find_all('vim-dnd-image-set-drop'):
+                    if i['answer-id'] in f['drag-ids']:
+                        answers.append(f'{f["image"]} - {i.text}')
 
-        for i in soup.find_all('vim-dnd-image-drag'):
-            for f in soup.find_all('vim-dnd-image-drop'):
-                if i['answer-id'] in f['drag-ids']:
-                    answers.append(f'{f.text} - {i.text}')
+        if soup.find('vim-dnd-image-drag'):
+            for i in soup.find_all('vim-dnd-image-drag'):
+                for f in soup.find_all('vim-dnd-image-drop'):
+                    if i['answer-id'] in f['drag-ids']:
+                        answers.append(f'{f.text} - {i.text}')
 
         return {
             'question' : self.get_task_question(soup),
