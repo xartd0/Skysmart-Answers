@@ -49,8 +49,9 @@ class SkyAnswers:
             for i in soup.find_all('vim-test-image-item', attrs={'correct': 'true'}):
                 answers.append(f'{i.text} - Верный')
         
-        if i.find('math-input-answer'):
-            answers.append(i.find('math-input-answer').text)
+        if soup.find('math-input-answer'):
+            for i in soup.find_all('math-input-answer'):
+                answers.append(i.text)
         
         if soup.find('vim-dnd-text-drop'):
             for i in soup.find_all('vim-dnd-text-drop'):
