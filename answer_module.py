@@ -89,6 +89,10 @@ class SkyAnswers:
                     if i['answer-id'] in f['drag-ids']:
                         answers.append(f'{f.text} - {i.text}')
 
+
+        if soup.find('edu-open-answer', attrs={'id': 'OA1'}):
+            answers.append('Необходимо загрузить файл')
+
         return {
             'question' : self.get_task_question(soup),
             'answer' : answers,
