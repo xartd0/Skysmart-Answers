@@ -33,6 +33,18 @@ async def get_room(taskHash):
             await session.close()
 
             return steps_raw['meta']['stepUuids'] 
+        
+# Тут стоило бы переписать, но если я полезу в get_room, то я сломаю обратную совместимось, поэтому это сдесь
+async def get_meta(taskHash):
+    payload = "{\"taskHash\":\"" + taskHash + "\"}"
+    headers = await get_headers()
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(api.url_room, headers=headers, data=payload) as resp:
+            steps_raw = await resp.json() 
+            await session.close()
+            return steps_raw["title"],steps_raw["meta"]["path"]["module"]["title"]
+        
             
 async def get_task_html(uuid):
     """---- Получаем html по uuid каждого задания отдельно ----"""
