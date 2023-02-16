@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 # Это чтоб сделать оформление
 import shutil
 
-# Функция которая форматирует Input в чтото красивое
+# Функция которая форматирует Input в что-то красивое
 
 
 # I: generate_one('number','title','full-text',['answers-1','answers-2'])
