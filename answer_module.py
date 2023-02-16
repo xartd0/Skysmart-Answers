@@ -4,6 +4,12 @@ from bs4 import BeautifulSoup
 import base64
 import skysmart_api
 
+
+def remove2linebreak(x:str) -> str:
+    while '\n\n' in x:
+        x = x.replace('\n\n', '\n')
+    return x.strip()
+
 class SkyAnswers:
 
     def __init__(self, task_hash: str):
@@ -24,7 +30,13 @@ class SkyAnswers:
         return answers_array
 
     def get_task_question(self, soup):
-        return soup.find("vim-instruction").text
+        return soup.find("vim-instruction").text.strip()
+
+    def get_task_full_question(self, soup):
+        vim_elements = soup.find_all(['vim-instruction', 'vim-groups','vim-test-item','vim-order-sentence-verify-item','vim-input-answers','vim-select-item','vim-test-image-item','math-input-answer','vim-dnd-text-drop','vim-dnd-group-drag','vim-groups-row','vim-strike-out-item','vim-dnd-image-set-drag','vim-dnd-image-drag','edu-open-answer'])
+        for element in vim_elements:
+            element.extract()
+        return remove2linebreak(soup.text)
 
     def get_task_answer(self, soup, tasks_count): # Тут все перепишу, если руки дойдут
         answers = []
@@ -95,6 +107,7 @@ class SkyAnswers:
 
         return {
             'question' : self.get_task_question(soup),
+            'full_q' : self.get_task_full_question(soup),
             'answer' : answers,
             'task_number' : tasks_count
         }
