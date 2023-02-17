@@ -9,6 +9,8 @@ import asyncio
 from bs4 import BeautifulSoup
 # Это чтоб сделать оформление
 import shutil
+# Для нахождения id комнаты
+import re
 
 # Функция которая форматирует Input в чтото красивое
 
@@ -63,6 +65,9 @@ async def main():
     
     # Получаем ID комнаты
     task_hash = input('Укажите название комнаты: ')
+    
+    # А почему бы и нет?
+    task_hash = re.findall(r'student/(.*)', task_hash)[0]
     
     # Создаём SkyAnswers
     answers_module = SkyAnswers(task_hash)
