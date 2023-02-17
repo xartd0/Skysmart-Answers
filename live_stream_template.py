@@ -12,7 +12,7 @@ import shutil
 # Для нахождения id комнаты
 import re
 
-# Функция которая форматирует Input в чтото красивое
+# Функция которая форматирует Input в что-то красивое
 
 
 # I: generate_one('number','title','full-text',['answers-1','answers-2'])
