@@ -11,7 +11,6 @@
 | https://edu.skysmart.ru/student/zubetareme | zubetareme |
 | https://edu.skysmart.ru/student/petilogemi | petilogemi |
 | https://edu.skysmart.ru/student/maxevepuma | maxevepuma |
-| https://edu.skysmart.ru/student/nexemiduke | nexemiduke |
 | https://edu.skysmart.ru/student/luzimosoxa | luzimosoxa |
 | https://edu.skysmart.ru/student/kuxikifizi | kuxikifizi |
 | https://edu.skysmart.ru/student/zubetareme | zubetareme |
@@ -62,7 +61,7 @@ auth_creds = {
     # Он асинхронный
     import asyncio
 
-    async def getAnsw(room):
+    async def getAnsw(task_hash):
         answers_module = SkyAnswers(task_hash)
         answers = await answers_module.get_answers()
 
