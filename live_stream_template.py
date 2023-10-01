@@ -66,9 +66,6 @@ async def main():
     # Получаем ID комнаты
     task_hash = input('Укажите название комнаты: ')
     
-    # А почему бы и нет?
-    task_hash = re.findall(r'student/(.*)', task_hash)[0]
-    
     # Создаём SkyAnswers
     answers_module = SkyAnswers(task_hash)
     

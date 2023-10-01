@@ -1,8 +1,9 @@
 # Ответы на SkySmart
+
 ### Нужно указывать именно название комнаты, а не ссылку
 
 Примеры:
-| Ссылка  | Название комнаты |
+| Ссылка | Название комнаты |
 | ------------- | ------------- |
 | https://edu.skysmart.ru/student/maxevepuma | maxevepuma |
 | https://edu.skysmart.ru/student/nexemiduke | nexemiduke |
@@ -16,39 +17,42 @@
 | https://edu.skysmart.ru/student/zubetareme | zubetareme |
 | https://edu.skysmart.ru/student/petilogemi | petilogemi |
 
-
-
-
 ## Зависимости
-1. ```python3```
-2. ```python-pip```
-3. ```aiohttp```
-4. ```beautifulsoup4```
-5. ```user_agent```
+
+1. `python3`
+2. `python-pip`
+3. `aiohttp`
+4. `beautifulsoup4`
+5. `user_agent`
 
 ## Использование
-1. ```git clone https://github.com/xartd0/Skysmart-Answers```
-2. ```cd Skysmart-Answers```
-3. ```pip install -r requirements.txt```
-4. ```python3 template.py``` (или ```python3 live_stream_template.py```)
+
+1. `git clone https://github.com/xartd0/Skysmart-Answers`
+2. `cd Skysmart-Answers`
+3. `pip install -r requirements.txt`
+4. `python3 template.py` (или `python3 live_stream_template.py`)
 5. Нужно указать именно название комнаты
 
 ## Аккаунт
+
 Также стоило бы настроить аккаунт
+
 ```
 ~> nano utils/config.py
 auth_creds = {
- 'email': 'Почта',
+ 'phoneOrEmail': 'Почта или номер телефона',
  'password': 'Пароль'
 }
 ```
 
 ## Скриншоты
+
 ![Скрин](screenshots/template.py.png)
 ![Ещё один скрин](https://user-images.githubusercontent.com/43171120/208267920-fe6022cb-66a4-4824-b44b-d3622320f742.png)
 ![Видео live_stream_template.py](screenshots/live_stream_template.py.mp4)
 
 ## Использование в своих прогах
+
 <details>
     <summary>
         Без "стрима ответов" и без полного вопроса
@@ -84,6 +88,7 @@ auth_creds = {
 
     asyncio.run(main())
     ```
+
 </details>
 
 <details>
@@ -116,7 +121,7 @@ auth_creds = {
     # Задание #number - *title*
     # Текст вопроса
     # full-text
-    # 
+    #
     #     Ответ: answers-1
     #     Ответ: answers-2
 
@@ -131,17 +136,17 @@ auth_creds = {
 
     # Новая функция для получения ответов
     async def get_answers(self):
-        
+
         # Tasks-uuid
         tasks_uuids = await skysmart_api.get_room(self.task_hash)
-        
+
         # А почему бы и нет
         meta = await skysmart_api.get_meta(self.task_hash)
         print( f'Название теста: {meta[0]}\nТема: {meta[1]}\n\n')
-        
+
         # Цикл по задачам
-        for tasks_count,uuid in enumerate(tasks_uuids): 
-            
+        for tasks_count,uuid in enumerate(tasks_uuids):
+
             # Получаем код задачи
             soup = await skysmart_api.get_task_html(uuid)
 
@@ -157,27 +162,24 @@ auth_creds = {
 
 
     async def main():
-        
+
         # Получаем ID комнаты
         task_hash = input('Укажите название комнаты: ')
-        
-        # А почему бы и нет?
-        task_hash = re.findall(r'student/(.*)', task_hash)[0]
-        
+
         # Создаём SkyAnswers
         answers_module = SkyAnswers(task_hash)
-        
+
         # Перезацисываем get_answers
         answers_module.get_answers = get_answers
-        
+
         # Выводим линию
         print(f'\n{"-"*shutil.get_terminal_size((80, 20)).columns}\n')
-        
+
         # Вызываем новую функцию
         await answers_module.get_answers(answers_module)
 
     # Запускаем
     asyncio.run(main())
     ```
-</details>
 
+</details>
