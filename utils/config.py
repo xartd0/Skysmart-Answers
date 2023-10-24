@@ -1,6 +1,6 @@
 
 # Данные от аккаунта
 auth_creds = {
-    'phoneOrEmail': 'asd3fgsdfgs3dfgsdfg@gmail.com',
-    'password': 'i6D92r2gUmwvWJu'
+    'email': 'githubcomxartd0@gmail.com',
+    'password': 'sdijrmltluhsnd49ui'
 }
