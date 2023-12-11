@@ -3,7 +3,7 @@
 from bs4 import BeautifulSoup
 import base64
 import skysmart_api
-
+import aiohttp
 
 def remove2linebreak(x:str) -> str:
     while '\n\n' in x:
@@ -16,16 +16,19 @@ class SkyAnswers:
         self.task_hash = task_hash
 
     async def get_answers(self):
-        tasks_count = 0
         answers_array = []
 
-        tasks_uuids = await skysmart_api.get_room(self.task_hash)
-        
-        for uuid in tasks_uuids: 
-            tasks_count += 1
+        async with aiohttp.ClientSession() as session:
+            try:
+                tasks_uuids = await skysmart_api.get_room(self.task_hash, session)
 
-            soup = await skysmart_api.get_task_html(uuid)
-            answers_array.append(self.get_task_answer(BeautifulSoup(soup, 'html.parser'), tasks_count)) 
+                for idx, uuid in enumerate(tasks_uuids):
+                    soup = await skysmart_api.get_task_html(uuid, session)
+                    if soup:
+                        parsed_soup = BeautifulSoup(soup, 'html.parser')
+                        answers_array.append(self.get_task_answer(parsed_soup, idx + 1))
+            except Exception as e:
+                print(f"Error in get_answers: {e}")
 
         return answers_array
 
