@@ -34,7 +34,7 @@ async def get_room(taskHash):
 
             return steps_raw['meta']['stepUuids'] 
         
-# Тут стоило бы переписать, но если я полезу в get_room, то я сломаю обратную совместимось, поэтому это сдесь
+
 async def get_meta(taskHash):
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
     headers = await get_headers()
