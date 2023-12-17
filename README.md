@@ -23,7 +23,7 @@
 1. `git clone https://github.com/xartd0/Skysmart-Answers`
 2. `cd Skysmart-Answers`
 3. `pip install -r requirements.txt`
-4. `python3 template.py` (или `python3 live_stream_template.py`)
+4. `python3 template.py`
 5. Нужно указать именно название комнаты
 
 ## Аккаунт
