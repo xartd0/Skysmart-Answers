@@ -41,9 +41,10 @@
 
 ```
 ~> nano utils/config.py
+# Данные от аккаунта
 auth_creds = {
-    'email': 'почта',
-    'password': 'пароль'
+    'password': '',
+    'phoneOrEmail': '' пишите почту
 }
 ```
 
