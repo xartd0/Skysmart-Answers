@@ -1,6 +1,6 @@
 echo Запуск сервера...
-start "Server" cmd /k uvicorn main:app --reload
+start "Server" cmd /k uvicorn web.main:app --reload
 
 echo Открытие index.html в браузере...
-start index.html
+start web/index.html
 
