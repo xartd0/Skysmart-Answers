@@ -1,4 +1,4 @@
-from answer_module import SkyAnswers
+from parser.answer_module import SkyAnswers  
 import asyncio
 
 
