@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from parser.answer_module import SkyAnswers  # Замените на имя вашей библиотеки
+from parser.answer_module import SkyAnswers
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
