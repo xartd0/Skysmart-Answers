@@ -17,14 +17,23 @@
 3. `aiohttp`
 4. `beautifulsoup4`
 5. `user_agent`
+5. `base64`
 
-## Использование
+## Использование через cmd
 
 1. `git clone https://github.com/xartd0/Skysmart-Answers`
 2. `cd Skysmart-Answers`
 3. `pip install -r requirements.txt`
 4. `python3 template.py`
 5. Нужно указать именно название комнаты
+
+## Использование через web (кто особо не шарит, а хочет сразу ответы)
+
+1. `git clone https://github.com/xartd0/Skysmart-Answers)` или качаете через сайт
+2. `cd Skysmart-Answers` или заходите через проводник
+3. `install.bat` просто нажимаем (установка всех библиотек)
+4. `start.bat` тут тоже (запуск сайта)
+
 
 ## Аккаунт
 
