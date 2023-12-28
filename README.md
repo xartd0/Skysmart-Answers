@@ -35,7 +35,7 @@
 4. `start.bat` тут тоже (запуск сайта)
 
 ## Работа web версии
-![изображение](https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/9ff33ab6-b097-49de-a8f2-c89310f585a1)
+![photo_2023-12-29_02-11-06](https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/921c5de9-d9cf-4924-8e08-3e60a6159568)
 
 ## Вопросы
 Если у вас остались вопросы, то пишите в тг - https://t.me/xartd0
