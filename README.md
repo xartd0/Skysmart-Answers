@@ -36,7 +36,7 @@
 
 ## Работа web версии
 https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/69cdc6e5-b05f-4432-91b9-2fc6b6c9ee67
-![изображение](https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/eaeee4fb-e0c0-4420-997d-6915dc5967cc)
+https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/eaeee4fb-e0c0-4420-997d-6915dc5967cc
 
 ## Вопросы
 Если у вас остались вопросы, то пишите в тг - https://t.me/xartd0
