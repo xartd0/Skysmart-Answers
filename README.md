@@ -1,5 +1,3 @@
-
-https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/69cdc6e5-b05f-4432-91b9-2fc6b6c9ee67
 # Ответы на SkySmart
 
 ### Нужно указывать именно название комнаты, а не ссылку
@@ -35,9 +33,9 @@ https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/69cdc6e5-b05f-443
 2. `cd Skysmart-Answers` или заходите через проводник
 3. `install.bat` просто нажимаем (установка всех библиотек)
 4. `start.bat` тут тоже (запуск сайта)
-5. Uploading 2023-12-29 01-35-26.mp4…
 
-
+## Работа web версии
+https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/69cdc6e5-b05f-4432-91b9-2fc6b6c9ee67
 
 ## Аккаунт
 
