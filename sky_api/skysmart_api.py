@@ -42,8 +42,8 @@ async def get_room(taskHash, session):
 
 async def get_meta(taskHash, session):
     """Get metadata for a task."""
-    payload = "{\"taskHash\":\"" + taskHash + "\"}"
     headers = await get_headers(session)
+    payload = "{\"taskHash\":\"" + taskHash + "\"}"
 
     if headers is not None:
         try:
@@ -70,3 +70,23 @@ async def get_task_html(uuid, session):
                     raise Exception(f"Task HTML request failed with status: {resp.status}")
         except Exception as e:
             print(f"Error during getting task HTML: {e}")
+
+
+async def get_room_info(session, taskHash):
+    """Get room info about skysmart room test."""
+    headers = await get_headers(session)
+
+    payload = "{\"taskHash\":\"" + taskHash + "\"}"
+
+    try:
+        async with session.post(api.url_room_preview, headers=headers, data=payload) as resp:
+            if resp.status == 200:
+
+                json_resp = await resp.json()
+
+                return json_resp
+            else:
+                raise Exception(f"Room info request failed with status: {resp.status}")
+    except Exception as e:
+        print(f"Error during getting info about room: {e}")
+        return None

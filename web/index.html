@@ -2,15 +2,28 @@
 <html>
 <head>
     <title>Получение ответов</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Введите название комнаты</h1>
-    <input type="text" id="roomName" placeholder="Название комнаты">
-    <button onclick="getAnswers()">Получить ответы</button>
-    <div id="answers"></div>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h1 class="text-xl font-bold text-center text-gray-700 my-5">Введите название комнаты</h1>
+        <div class="flex justify-center">
+            <input type="text" id="roomName" placeholder="Название комнаты" class="px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
+            <button onclick="getAnswers()" class="ml-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none">Получить ответы</button>
+        </div>
+        <div class="stage hidden mx-auto flex justify-center items-center h-screen" id="loading">
+            <div class="dot-bricks"></div>
+        </div>
+        <!-- Блок информации о тесте -->
+        <div id="testInfo" class="hidden mt-5 p-4 border rounded shadow-lg bg-white">
+            <!-- Место для информации о тесте -->
+        </div>
+        <div id="answers" class="mt-5"></div>
+    </div>
 
-    <script src="script.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <script src="script.js"></script>
 </body>
 </html>

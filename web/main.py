@@ -21,4 +21,5 @@ class RoomRequest(BaseModel):
 async def get_answers(request: RoomRequest):
     answers_module = SkyAnswers(request.roomName)
     answers = await answers_module.get_answers()
-    return answers
+    more_info = await answers_module.get_room_info()
+    return answers, more_info

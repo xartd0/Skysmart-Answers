@@ -31,6 +31,16 @@ class SkyAnswers:
                 print(f"Error in get_answers: {e}")
 
         return answers_array
+    
+    async def get_room_info(self):
+        async with aiohttp.ClientSession() as session:
+            try:
+                room_info = await skysmart_api.get_room_info(session, self.task_hash)
+
+                return room_info
+            except Exception as e:
+                print(f"Error: {e}")
+
 
     def get_task_question(self, soup):
         return soup.find("vim-instruction").text.strip()
@@ -112,6 +122,6 @@ class SkyAnswers:
             'question' : self.get_task_question(soup),
             'full_q' : self.get_task_full_question(soup),
             'answer' : answers,
-            'task_number' : tasks_count
+            'task_number' : tasks_count,
         }
 
