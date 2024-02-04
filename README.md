@@ -1,6 +1,9 @@
 # Ответы на SkySmart
 
-### Нужно указывать именно название комнаты, а не ссылку
+## Работа web версии
+![photo_2023-12-29_02-11-06](https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/921c5de9-d9cf-4924-8e08-3e60a6159568)
+
+# Нужно указывать именно название комнаты, а не ссылку
 
 Примеры:
 | Ссылка | Название комнаты |
@@ -10,40 +13,43 @@
 | https://edu.skysmart.ru/student/luzimosoxa | luzimosoxa |
 | https://edu.skysmart.ru/student/kuxikifizi | kuxikifizi |
 
-## Зависимости
 
-1. `python3`
-2. `python-pip`
-3. `aiohttp`
-4. `beautifulsoup4`
-5. `user_agent`
-5. `base64`
+<!-- Run Locally -->
+## :running: Запуск локально
 
-## Использование через cmd
+Клонируем репозиторий
 
-1. `git clone https://github.com/xartd0/Skysmart-Answers`
-2. `cd Skysmart-Answers`
-3. `pip install -r requirements.txt`
-4. `python3 template.py`
-5. Нужно указать именно название комнаты
+```bash
+  git clone [https://github.com/Louis3797/awesome-readme-template.git](https://github.com/xartd0/Skysmart-Answers)
+```
 
-## Использование через web (кто особо не шарит, а хочет сразу ответы, в нем есть поддержка математических символов)
+Заходим в его папку
 
-1. `git clone https://github.com/xartd0/Skysmart-Answers)` или качаете через сайт
-2. `cd Skysmart-Answers` или заходите через проводник
-3. `install.bat` просто нажимаем (установка всех библиотек)
-4. `start.bat` тут тоже (запуск сайта)
+```bash
+  cd Skysmart-Answers
+```
 
-## Работа web версии
-![photo_2023-12-29_02-11-06](https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/921c5de9-d9cf-4924-8e08-3e60a6159568)
-https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/c0fb81e7-5011-4c8f-988f-30a139b9ed5e
+Ставим зависимости или запустите install.bat
 
-## Вопросы
-Если у вас остались вопросы, то пишите в тг - https://t.me/xartd0
+```bash
+  pip3 install -r requirements.txt
+```
+
+Запуск web версии
+
+```bash
+  start.bat
+```
+
+Запуск через cmd
+
+```bash
+  python3 template.py
+```
+
 
 ## Аккаунт
-
-В конфиге уже есть аккаунт, но он может быть заблокирован, поэтому лучше впишите свой.
+В конфиге уже есть аккаунт, но вы можете использовать свой (необязательно).
 
 ```
 ~> nano utils/config.py
@@ -54,4 +60,5 @@ auth_creds = {
 }
 ```
 
-
+## Вопросы
+Если у вас остались вопросы, то пишите в тг - https://t.me/xartd0
