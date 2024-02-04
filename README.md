@@ -20,7 +20,7 @@
 Клонируем репозиторий
 
 ```bash
-  git clone [https://github.com/Louis3797/awesome-readme-template.git](https://github.com/xartd0/Skysmart-Answers)
+  git clone https://github.com/xartd0/Skysmart-Answers
 ```
 
 Заходим в его папку
