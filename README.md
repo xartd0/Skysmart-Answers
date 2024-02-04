@@ -2,9 +2,7 @@
 
 ### Работа web версии
 
-<div align="center"> 
-  <img src="https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/921c5de9-d9cf-4924-8e08-3e60a6159568" alt="screenshot" width="600" height="400"/>
-</div>
+<img src="https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/921c5de9-d9cf-4924-8e08-3e60a6159568" alt="screenshot" width="600" height="400"/>
 
 ### Нужно указывать именно название комнаты, а не ссылку
 
