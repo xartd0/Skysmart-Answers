@@ -1,9 +1,9 @@
-# Ответы на SkySmart
+# Ответы на тесты от платформы https://edu.skysmart.ru/
 
 ## Работа web версии
 ![photo_2023-12-29_02-11-06](https://github.com/xartd0/Skysmart-Answers-API/assets/43171120/921c5de9-d9cf-4924-8e08-3e60a6159568)
 
-# Нужно указывать именно название комнаты, а не ссылку
+## Нужно указывать именно название комнаты, а не ссылку
 
 Примеры:
 | Ссылка | Название комнаты |
@@ -12,6 +12,7 @@
 | https://edu.skysmart.ru/student/nexemiduke | nexemiduke |
 | https://edu.skysmart.ru/student/luzimosoxa | luzimosoxa |
 | https://edu.skysmart.ru/student/kuxikifizi | kuxikifizi |
+
 
 
 <!-- Run Locally -->
@@ -29,7 +30,7 @@
   cd Skysmart-Answers
 ```
 
-Ставим зависимости или запустите install.bat
+Ставим зависимости или запускаем install.bat
 
 ```bash
   pip3 install -r requirements.txt
@@ -46,6 +47,7 @@
 ```bash
   python3 template.py
 ```
+
 
 
 ## Аккаунт
