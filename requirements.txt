@@ -2,3 +2,4 @@ aiohttp==3.8.1
 beautifulsoup4==4.11.1
 user_agent==0.1.10
 uvicorn==0.18.2
+fastapi==0.45.0
