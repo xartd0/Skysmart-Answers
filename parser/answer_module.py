@@ -4,11 +4,11 @@ from bs4 import BeautifulSoup
 import base64
 import sky_api.skysmart_api as skysmart_api
 import aiohttp
+import re
 
-def remove2linebreak(x:str) -> str:
-    while '\n\n' in x:
-        x = x.replace('\n\n', '\n')
-    return x.strip()
+def remove2linebreak(x: str) -> str:
+    """Удаляет лишние символы новой строки."""
+    return re.sub(r'\n+', '\n', x.strip())
 
 class SkyAnswers:
 
@@ -16,6 +16,7 @@ class SkyAnswers:
         self.task_hash = task_hash
 
     async def get_answers(self):
+        """Получает ответы на задания."""
         answers_array = []
 
         async with aiohttp.ClientSession() as session:
@@ -33,23 +34,25 @@ class SkyAnswers:
         return answers_array
     
     async def get_room_info(self):
+        """Получает информацию о комнате."""
         async with aiohttp.ClientSession() as session:
             try:
                 room_info = await skysmart_api.get_room_info(session, self.task_hash)
-
                 return room_info
             except Exception as e:
                 print(f"Error: {e}")
 
-
-    def get_task_question(self, soup):
+    def extract_task_question(self, soup):
+        """Извлекает вопрос из задания."""
         return soup.find("vim-instruction").text.strip()
 
-    def get_task_full_question(self, soup):
-        vim_elements = soup.find_all(['vim-instruction', 'vim-groups','vim-test-item','vim-order-sentence-verify-item','vim-input-answers','vim-select-item','vim-test-image-item','math-input-answer','vim-dnd-text-drop','vim-dnd-group-drag','vim-groups-row','vim-strike-out-item','vim-dnd-image-set-drag','vim-dnd-image-drag','edu-open-answer'])
+    def extract_task_full_question(self, soup):
+        """Извлекает полный текст задания."""
+        vim_elements = soup.find_all(['vim-instruction', 'vim-groups', 'vim-test-item', 'vim-order-sentence-verify-item', 'vim-input-answers', 'vim-select-item', 'vim-test-image-item', 'math-input-answer', 'vim-dnd-text-drop', 'vim-dnd-group-drag', 'vim-groups-row', 'vim-strike-out-item', 'vim-dnd-image-set-drag', 'vim-dnd-image-drag', 'edu-open-answer'])
         for element in vim_elements:
-            element.extract()
+            element.decompose()
         return remove2linebreak(soup.text)
+
 
     def get_task_answer(self, soup, tasks_count): # Тут все перепишу, если руки дойдут
         answers = []
@@ -119,8 +122,8 @@ class SkyAnswers:
             answers.append('Необходимо загрузить файл')
 
         return {
-            'question' : self.get_task_question(soup),
-            'full_q' : self.get_task_full_question(soup),
+            'question' : self.extract_task_question(soup),
+            'full_q' : self.extract_task_full_question(soup),
             'answer' : answers,
             'task_number' : tasks_count,
         }

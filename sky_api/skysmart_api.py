@@ -1,41 +1,47 @@
 import aiohttp
 from user_agent import generate_user_agent
 from utils import api_variables as api
-from utils import config
+from utils.auth import get_token
+import json
 
-async def get_headers(session):
+
+async def load_token_from_json(filename="token.json"):
+    """Load the token from a JSON file."""
+    try:
+        with open(filename, "r") as file:
+            data = json.load(file)
+            return data.get("token")
+    except FileNotFoundError:
+        print(f"Токена нет, начинаем процесс получения токена, подождите.")
+        success = get_token()
+        if success:
+            print("Токен был успешно получен и сохранен в token.json")
+            return await load_token_from_json()  # Повторный вызов функции после получения токена
+    except Exception as e:
+        print(f"Failed to load token: {e}")
+    return None
+
+
+async def get_headers():
     """Get jwt token for Skysmart account login."""
-    user_agent = generate_user_agent()
+    token = await load_token_from_json()
+    if token:
+        user_agent = generate_user_agent()
+        return {
+            'Accept': 'application/json, text/plain, */*',
+            'Authorization': 'Bearer ' + token,
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
+            'User-Agent': user_agent,
+        }
+    else:
+        return None
 
-    return {
-        'Accept': 'application/json, text/plain, */*',
-        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MDc3MjgwODIsImV4cCI6MTcxMDMyMDA4Miwicm9sZXMiOlsiUk9MRV9FRFVfU0tZU01BUlRfU1RVREVOVF9VU0FHRSJdLCJhdXRoVXNlcklkIjpudWxsLCJ1c2VySWQiOjg1NTY2NDY3LCJpZGVudGl0eSI6InhvZG9iZXZlbWEifQ.RIhsOczwutlD5797b-Zk973ObMVy76axkTX0NAmsUtBNkvO1v6FRzc0EFTlryNFDj4SlfIyA_5qo_cNRLxYHKRmq6DxfLAnzB4jw-RU18DWjB9r6VR1ayDjEsS9yn1WsJf6u9rqdtLld2AchbNxuaRunULJPNm23tNJU9ejLQxea87bBZsUOmywyoQeiau0F-mGOGfOZjPYcoA7Hg_g755EVR0c-W--uEClC0w4adYj59NY5wL-tnBOQsdgU-7_2MV3p3IoXUdcDtVaPTA0nz0ymTrI1eaTElcXuZuGQkjQuwoQsjLVTNEKQJYjlAGr-JyIMh-i4cjY7ETA8uCZMho-cNFvMybU-63SBr57nvyiFLyx1X6QADCgJHBrrh_-Q6UQDbmPAekDsPv9-JrAiuEvOvGBPt3vGwZZpiFHl6d3HH5BkcP2FB8R5wJLZwNOyKHALlJv9r2ww1KFUPDssm2ZJtHZ9_r2YtJ00yqcBsPbhMIMQSHN04xEyODVK_oiNau9vabp24klHcUFT2fCKfDqXYHYwC1sv_BNf8V3kEzPTGC1EvSQMuMz11huWmmg_JKmNdVZM78E3_79ZMJKY4mSO_NB4-ExpnGtB-ETbZ_uIQJfuD6Fy2BtAGzZFpzNivLYyPOFemke4Gn2V3ro23xaSFQ7iT00FF3SyrMOhaAE',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/json',
-        'User-Agent': user_agent,
-    }
-
-    # try:
-    #     async with session.post(api.url_auth, headers={'User-Agent': user_agent}, data=config.auth_creds) as resp:
-    #         if resp.status == 200:
-    #             json_resp = await resp.json()
-    #             return {
-    #                 'Accept': 'application/json, text/plain, */*',
-    #                 'Authorization': 'Bearer ' + json_resp['jwtToken'],
-    #                 'Connection': 'keep-alive',
-    #                 'Content-Type': 'application/json',
-    #                 'User-Agent': user_agent,
-    #             }
-    #         else:
-    #             raise Exception(f"Auth request failed with status: {resp.status}")
-    # except Exception as e:
-    #     print(f"Error during authentication: {e}")
-    #     return None
 
 async def get_room(taskHash, session):
     """Get uuid for all tasks in a test."""
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
-    headers = await get_headers(session)
+    headers = await get_headers()
 
     if headers is not None:
         try:
@@ -50,7 +56,7 @@ async def get_room(taskHash, session):
 
 async def get_meta(taskHash, session):
     """Get metadata for a task."""
-    headers = await get_headers(session)
+    headers = await get_headers()
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
 
     if headers is not None:
@@ -66,7 +72,7 @@ async def get_meta(taskHash, session):
 
 async def get_task_html(uuid, session):
     """Get HTML for a task by uuid."""
-    headers = await get_headers(session)
+    headers = await get_headers()
 
     if headers is not None:
         try:
@@ -82,7 +88,7 @@ async def get_task_html(uuid, session):
 
 async def get_room_info(session, taskHash):
     """Get room info about skysmart room test."""
-    headers = await get_headers(session)
+    headers = await get_headers()
 
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
 
