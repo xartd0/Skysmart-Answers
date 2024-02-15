@@ -54,6 +54,7 @@ async def get_room(taskHash, session):
         except Exception as e:
             print(f"Error during getting room: {e}")
 
+
 async def get_meta(taskHash, session):
     """Get metadata for a task."""
     headers = await get_headers()
@@ -69,6 +70,7 @@ async def get_meta(taskHash, session):
                     raise Exception(f"Meta request failed with status: {resp.status}")
         except Exception as e:
             print(f"Error during getting meta: {e}")
+
 
 async def get_task_html(uuid, session):
     """Get HTML for a task by uuid."""
