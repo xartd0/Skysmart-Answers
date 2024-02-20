@@ -31,7 +31,7 @@
   cd Skysmart-Answers
 ```
 
-Ставим зависимости или запускаем install.bat
+Ставим зависимости
 
 ```bash
   pip3 install -r requirements.txt
