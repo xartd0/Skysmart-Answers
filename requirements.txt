@@ -1,5 +1,5 @@
 beautifulsoup4==4.11.1
 user_agent==0.1.10
 uvicorn==0.18.2
-fastapi==0.45.0
+fastapi
 selenium==4.17.2
