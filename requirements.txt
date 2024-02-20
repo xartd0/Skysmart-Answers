@@ -3,3 +3,4 @@ user_agent==0.1.10
 uvicorn==0.18.2
 fastapi
 selenium==4.17.2
+aiohttp
