@@ -46,7 +46,7 @@
 Запуск через cmd
 
 ```bash
-  python3 template.py
+  python template.py
 ```
 
 
