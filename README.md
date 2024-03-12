@@ -37,10 +37,10 @@
   pip3 install -r requirements.txt
 ```
 
-Запуск web версии (или руками uvicorn web.main:app --reload и отрыть index.html)
+Запуск web версии
 
 ```bash
-  start.bat
+  python -m web.main
 ```
 
 Запуск через cmd
