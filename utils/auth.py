@@ -1,59 +1,27 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from utils.config import auth_creds
+import aiohttp
 from utils.api_variables import url_auth, url_logout
 import time
 import json
 
 def login_and_extract_token(username, password):
     """Login to the website and extract JWT token."""
-    options = webdriver.ChromeOptions()
-    options.add_argument('--disable-gpu')
-    options.add_argument('--mute-audio')
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--ignore-ssl-errors')
-    options.add_argument('--disable-infobars')
-    options.add_argument('--ignore-certificate-errors-spki-list')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--no-zygote')
-    options.add_argument('--log-level=3')
-    options.add_argument('--allow-running-insecure-content')
-    options.add_argument('--disable-web-security')
-    options.add_argument('--disable-features=VizDisplayCompositor')
-    options.add_argument('--disable-breakpad')
-    options.add_argument("--headless")
-
-    driver = webdriver.Chrome(options=options)
-    
-    try:
-        print('[Starting...]')
-        # Navigate to the login page
-        driver.get(url_auth)
-
-        # Fill in the username and password fields
-        username_input = driver.find_element(By.NAME, 'username')
-        username_input.send_keys(username)
-
-        password_input = driver.find_element(By.NAME, 'password')
-        password_input.send_keys(password)
-
-        # Submit the form
-        login_button = driver.find_element(By.CLASS_NAME, 'button')
-        login_button.click()
-        time.sleep(1)
-        # Logout
-        driver.get(url_logout)
-        time.sleep(1)
-
-        # Extract JWT token from local storage
-        print('[Getting token...]')
-        jwt_data = json.loads(driver.execute_script("return localStorage.getItem('edu-token-collection')"))
-        first_key = next(iter(jwt_data.keys()))
-        token = jwt_data[first_key]["token"]
-
-        return token
-    finally:
-        driver.quit()
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            "https://api-edu.skysmart.ru/api/v1/user/registration/teacher", 
+            data=json.dumps({
+                "userAgent":{
+                    "ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    "browser":{"name":"Chrome","version":"122.0.0.0","major":"122"},
+                    "engine":{"name":"Blink","version":"122.0.0.0"},
+                    "os":{"name":"Windows","version":"10"},
+                    "device":{},"cpu":{"architecture":"amd64"}
+                }
+            })
+        ) as resp:
+            json_resp = await resp.json()
+            token = json_resp["jwtToken"]
+            save_token_to_json(token)
+            return token
     
 def save_token_to_json(token, filename="token.json"):
     """Save the token to a JSON file."""
