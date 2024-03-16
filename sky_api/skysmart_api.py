@@ -13,7 +13,7 @@ async def get_headers(session):
         'User-Agent': user_agent
     }
     if gl_token == '':
-        async with session.post('https://api-edu.skysmart.ru/api/v1/user/registration/teacher', headers=headers) as resp:
+        async with session.post(api.url_auth2, headers=headers) as resp:
             json_resp = await resp.json()
             gl_token = json_resp["jwtToken"]
 
