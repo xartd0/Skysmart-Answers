@@ -3,3 +3,4 @@ url_auth = 'https://id.skyeng.ru/login?skin=skysmart-class&redirect=https%3A%2F%
 url_steps = 'https://api-edu.skysmart.ru/api/v1/content/step/load?stepUuid='
 url_room_preview = 'https://api-edu.skysmart.ru/api/v1/task/preview'
 url_logout = 'https://id.skysmart.ru/logout?redirect=https%3A%2F%2Fedu.skysmart.ru%2Fpromo%2Funschool-homework'
+url_auth2 = 'https://api-edu.skysmart.ru/api/v1/user/registration/teacher'

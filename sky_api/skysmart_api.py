@@ -1,47 +1,32 @@
-import aiohttp
 from user_agent import generate_user_agent
 from utils import api_variables as api
-from utils.auth import get_token
-import json
 
+gl_token = ''
 
-async def load_token_from_json(filename="token.json"):
-    """Load the token from a JSON file."""
-    try:
-        with open(filename, "r") as file:
-            data = json.load(file)
-            return data.get("token")
-    except FileNotFoundError:
-        print(f"Токена нет, начинаем процесс получения токена, подождите.")
-        success = get_token()
-        if success:
-            print("Токен был успешно получен и сохранен в token.json")
-            return await load_token_from_json()  # Повторный вызов функции после получения токена
-    except Exception as e:
-        print(f"Failed to load token: {e}")
-    return None
-
-
-async def get_headers():
+async def get_headers(session):
     """Get jwt token for Skysmart account login."""
-    token = await load_token_from_json()
-    if token:
-        user_agent = generate_user_agent()
-        return {
-            'Accept': 'application/json, text/plain, */*',
-            'Authorization': 'Bearer ' + token,
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'User-Agent': user_agent,
-        }
-    else:
-        return None
+    global gl_token
+    user_agent = generate_user_agent()
+    headers = {
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json',
+        'User-Agent': user_agent
+    }
+    if gl_token == '':
+        async with session.post('https://api-edu.skysmart.ru/api/v1/user/registration/teacher', headers=headers) as resp:
+            json_resp = await resp.json()
+            gl_token = json_resp["jwtToken"]
+
+    auth_header = {'Authorization': 'Bearer ' + gl_token}
+    headers = {'Accept': 'application/json, text/plain, */*'} | auth_header | headers
+
+    return headers
 
 
 async def get_room(taskHash, session):
     """Get uuid for all tasks in a test."""
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
-    headers = await get_headers()
+    headers = await get_headers(session)
 
     if headers is not None:
         try:
@@ -57,7 +42,7 @@ async def get_room(taskHash, session):
 
 async def get_meta(taskHash, session):
     """Get metadata for a task."""
-    headers = await get_headers()
+    headers = await get_headers(session)
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
 
     if headers is not None:
@@ -74,7 +59,7 @@ async def get_meta(taskHash, session):
 
 async def get_task_html(uuid, session):
     """Get HTML for a task by uuid."""
-    headers = await get_headers()
+    headers = await get_headers(session)
 
     if headers is not None:
         try:
@@ -90,7 +75,7 @@ async def get_task_html(uuid, session):
 
 async def get_room_info(session, taskHash):
     """Get room info about skysmart room test."""
-    headers = await get_headers()
+    headers = await get_headers(session)
 
     payload = "{\"taskHash\":\"" + taskHash + "\"}"
 
