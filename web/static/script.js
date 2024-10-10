@@ -22,7 +22,7 @@ async function getAnswers() {
             const answersDiv = document.getElementById('answers');
             answersDiv.innerHTML = ''; // Очистка предыдущих ответов
             answers.forEach((answer, index) => {
-                const formattedAnswer = formatAndCheckLatex(answer.answer);
+                const formattedAnswer = formatAndCheckLatex(answer.answers);
                 const answerHtml = `
                     <div class="bg-white p-4 rounded shadow-md mb-4 opacity-0 transition-opacity duration-500" style="animation-delay: ${index * 100}ms">
                         <p class="text-gray-800">Задание #${answer.task_number} - ${answer.question}</p>
