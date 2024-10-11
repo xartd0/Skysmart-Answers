@@ -11,7 +11,7 @@ async def main():
 
     for solution in answers:
         print(f"Задание #{solution['task_number']} - {solution['question']}")
-        for answer in solution['answer']:
+        for answer in solution['answers']:
             print(f'   Ответ: {answer}')
         print('')
 
