@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "web/main.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "web/main.py" }
+  ]
+}

@@ -33,7 +33,3 @@ async def get_answers(request: RoomRequest):
     answers = await answers_module.get_answers()
     more_info = await answers_module.get_room_info()
     return answers, more_info
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("web.main:app", host="127.0.0.1", port=8000, reload=True)
