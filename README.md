@@ -15,6 +15,9 @@
 | https://edu.skysmart.ru/student/kuxikifizi | kuxikifizi |
 
 
+### :running: Готовое решение
+Данный репозиторий развернут на vercel - https://skysmart-answers.vercel.app/
+
 
 <!-- Run Locally -->
 ### :running: Запуск локально
@@ -40,7 +43,13 @@
 Запуск web версии
 
 ```bash
-  python -m web.main
+  uvicorn web.main:app --port 8000
+```
+
+На фронтенде нужно поменять в запросе url на localhost:8000
+В данной строке
+```bash
+  const response = await fetch('https://skysmart-answers.vercel.app/get_answers/', {
 ```
 
 Запуск через cmd
