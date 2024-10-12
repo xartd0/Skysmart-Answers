@@ -5,11 +5,12 @@ async function getAnswers() {
         document.getElementById('loading').classList.remove('hidden');
 
         try {
-            const response = await fetch('http://localhost:8000/get_answers/', {
+            const response = await fetch('https://skysmart-answers.vercel.app/get_answers/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: "include",  
                 body: JSON.stringify({ roomName })
             });
             const data = await response.json(); // Получаем данные от API

@@ -11,7 +11,7 @@ app.mount("/static", StaticFiles(directory="web/static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://skysmart-answers.vercel.app", "http://localhost"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
